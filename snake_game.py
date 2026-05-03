@@ -2,8 +2,6 @@ import turtle
 import time
 import random
 
-delay = 0.1
-
 wn = turtle.Screen()
 wn.title("Snake Game")
 wn.bgcolor("green")
@@ -26,36 +24,39 @@ food.penup()
 food.goto(0, 100)
 
 segments = []
+delay = 0.1
+
 
 def move():
     if head.direction == "up":
-        y = head.ycor()
-        head.sety(y + 20)
-    if head.direction == "down":
-        y = head.ycor()
-        head.sety(y - 20)
-    if head.direction == "left":
-        x = head.xcor()
-        head.setx(x - 20)
-    if head.direction == "right":
-        x = head.xcor()
-        head.setx(x + 20)
+        head.sety(head.ycor() + 20)
+    elif head.direction == "down":
+        head.sety(head.ycor() - 20)
+    elif head.direction == "left":
+        head.setx(head.xcor() - 20)
+    elif head.direction == "right":
+        head.setx(head.xcor() + 20)
+
 
 def go_up():
     if head.direction != "down":
         head.direction = "up"
 
+
 def go_down():
     if head.direction != "up":
         head.direction = "down"
+
 
 def go_left():
     if head.direction != "right":
         head.direction = "left"
 
+
 def go_right():
     if head.direction != "left":
         head.direction = "right"
+
 
 wn.listen()
 wn.onkey(go_up, "w")
@@ -66,19 +67,8 @@ wn.onkey(go_right, "d")
 while True:
     wn.update()
 
-    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
-        time.sleep(1)
-        head.goto(0, 0)
-        head.direction = "stop"
-        for segment in segments:
-            segment.goto(1000, 1000)
-        segments.clear()
-
     if head.distance(food) < 20:
-        x = random.randint(-270, 270)
-        y = random.randint(-270, 270)
-        food.goto(x, y)
-
+        food.goto(random.randint(-270, 270), random.randint(-270, 270))
         new_segment = turtle.Turtle()
         new_segment.speed(0)
         new_segment.shape("square")
@@ -86,17 +76,11 @@ while True:
         new_segment.penup()
         segments.append(new_segment)
 
-        delay = max(0.03, delay * 0.95)
-
     for i in range(len(segments) - 1, 0, -1):
-        x = segments[i - 1].xcor()
-        y = segments[i - 1].ycor()
-        segments[i].goto(x, y)
+        segments[i].goto(segments[i - 1].xcor(), segments[i - 1].ycor())
 
-    if len(segments) > 0:
-        x = head.xcor()
-        y = head.ycor()
-        segments[0].goto(x, y)
+    if segments:
+        segments[0].goto(head.xcor(), head.ycor())
 
     move()
     time.sleep(delay)
