@@ -2,6 +2,8 @@ import turtle
 import time
 import random
 
+delay = 0.1
+
 wn = turtle.Screen()
 wn.title("Snake Game")
 wn.bgcolor("green")
@@ -24,49 +26,36 @@ food.penup()
 food.goto(0, 100)
 
 segments = []
-delay = 0.1
-score = 0
-
-pen = turtle.Turtle()
-pen.speed(0)
-pen.shape("square")
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 260)
-pen.write("Score: 0", align="center", font=("Arial", 16, "normal"))
-
 
 def move():
     if head.direction == "up":
-        head.sety(head.ycor() + 20)
-    elif head.direction == "down":
-        head.sety(head.ycor() - 20)
-    elif head.direction == "left":
-        head.setx(head.xcor() - 20)
-    elif head.direction == "right":
-        head.setx(head.xcor() + 20)
-
+        y = head.ycor()
+        head.sety(y + 20)
+    if head.direction == "down":
+        y = head.ycor()
+        head.sety(y - 20)
+    if head.direction == "left":
+        x = head.xcor()
+        head.setx(x - 20)
+    if head.direction == "right":
+        x = head.xcor()
+        head.setx(x + 20)
 
 def go_up():
     if head.direction != "down":
         head.direction = "up"
 
-
 def go_down():
     if head.direction != "up":
         head.direction = "down"
-
 
 def go_left():
     if head.direction != "right":
         head.direction = "left"
 
-
 def go_right():
     if head.direction != "left":
         head.direction = "right"
-
 
 wn.listen()
 wn.onkey(go_up, "w")
@@ -84,29 +73,30 @@ while True:
         for segment in segments:
             segment.goto(1000, 1000)
         segments.clear()
-        score = 0
-        delay = 0.1
-        pen.clear()
-        pen.write(f"Score: {score}", align="center", font=("Arial", 16, "normal"))
 
     if head.distance(food) < 20:
-        food.goto(random.randint(-270, 270), random.randint(-270, 270))
+        x = random.randint(-270, 270)
+        y = random.randint(-270, 270)
+        food.goto(x, y)
+
         new_segment = turtle.Turtle()
         new_segment.speed(0)
         new_segment.shape("square")
         new_segment.color("brown")
         new_segment.penup()
         segments.append(new_segment)
-        score += 10
-        pen.clear()
-        pen.write(f"Score: {score}", align="center", font=("Arial", 16, "normal"))
+
         delay = max(0.03, delay * 0.95)
 
     for i in range(len(segments) - 1, 0, -1):
-        segments[i].goto(segments[i - 1].xcor(), segments[i - 1].ycor())
+        x = segments[i - 1].xcor()
+        y = segments[i - 1].ycor()
+        segments[i].goto(x, y)
 
-    if segments:
-        segments[0].goto(head.xcor(), head.ycor())
+    if len(segments) > 0:
+        x = head.xcor()
+        y = head.ycor()
+        segments[0].goto(x, y)
 
     move()
     time.sleep(delay)
