@@ -25,6 +25,16 @@ food.goto(0, 100)
 
 segments = []
 delay = 0.1
+score = 0
+
+pen = turtle.Turtle()
+pen.speed(0)
+pen.shape("square")
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Score: 0", align="center", font=("Arial", 16, "normal"))
 
 
 def move():
@@ -67,6 +77,18 @@ wn.onkey(go_right, "d")
 while True:
     wn.update()
 
+    if head.xcor() > 290 or head.xcor() < -290 or head.ycor() > 290 or head.ycor() < -290:
+        time.sleep(1)
+        head.goto(0, 0)
+        head.direction = "stop"
+        for segment in segments:
+            segment.goto(1000, 1000)
+        segments.clear()
+        score = 0
+        delay = 0.1
+        pen.clear()
+        pen.write(f"Score: {score}", align="center", font=("Arial", 16, "normal"))
+
     if head.distance(food) < 20:
         food.goto(random.randint(-270, 270), random.randint(-270, 270))
         new_segment = turtle.Turtle()
@@ -75,6 +97,10 @@ while True:
         new_segment.color("brown")
         new_segment.penup()
         segments.append(new_segment)
+        score += 10
+        pen.clear()
+        pen.write(f"Score: {score}", align="center", font=("Arial", 16, "normal"))
+        delay = max(0.03, delay * 0.95)
 
     for i in range(len(segments) - 1, 0, -1):
         segments[i].goto(segments[i - 1].xcor(), segments[i - 1].ycor())
